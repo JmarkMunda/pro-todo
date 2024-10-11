@@ -1,50 +1,46 @@
 import {StyleSheet, Text, View} from "react-native";
-import React, {useState} from "react";
-import {TodoType} from "../../utils/types";
+import {SCREEN_WIDTH} from "../../utils/constants";
+import React from "react";
 import TodoList from "../../components/TodoList";
 import AddEditModal from "../../components/AddEditModal";
 import Button from "../../components/Button";
-import {showMessage} from "react-native-flash-message";
+import useTodo from "../../hooks/useTodo";
+import SearchBar from "../../components/Searchbar";
+import useSearch from "../../hooks/useSearch";
+import DropdownSelect from "../../components/DropdownSelect";
+import useDropdown from "../../hooks/useDropdown";
 
 const TodoListScreen = () => {
-  const [todos, setTodos] = useState<TodoType[]>([]);
-  const [showModal, setShowModal] = useState(false);
-  const [editingTodo, setEditingTodo] = useState<TodoType | null>(null);
+  const {searchValue, onSearchChange} = useSearch();
 
-  const onSubmit = (data: TodoType) => {
-    if (Object.entries(editingTodo || {}).length > 0) {
-      onEditTodo(data);
-      setEditingTodo(null);
-    } else {
-      onAddTodo(data);
-    }
-  };
+  const {dropdownItems, selectedDropdown, onDropdownChange} = useDropdown();
 
-  const onAddTodo = (data: TodoType) => {
-    setTodos(prev => [...prev, data]);
-  };
-
-  const openEditModal = (id: string, newData: TodoType) => {
-    setShowModal(true);
-    setEditingTodo(newData);
-  };
-
-  const onEditTodo = (data: TodoType) => {
-    const updatedTodo = todos.map(todo => (todo.id === data.id ? data : todo));
-    setTodos(updatedTodo);
-  };
-
-  const onDeleteTodo = (id: string) => {
-    const newTodos = todos.filter(todo => todo.id !== id);
-    setTodos(newTodos);
-    showMessage({type: "success", icon: "success", message: "Deleted"});
-  };
+  const {
+    todos,
+    editingTodo,
+    showModal,
+    openEditModal,
+    openModal,
+    closeModal,
+    onDeleteTodo,
+    onSubmit,
+  } = useTodo(searchValue, selectedDropdown);
 
   return (
     <View style={styles.container}>
+      <SearchBar searchValue={searchValue} onSearchChange={onSearchChange} />
+
+      <View style={styles.dropdown}>
+        <DropdownSelect
+          items={dropdownItems}
+          selectedItem={selectedDropdown}
+          onChangeItem={onDropdownChange}
+        />
+      </View>
+
       <View style={styles.titleContainer}>
-        <Text>Todos</Text>
-        <Button text="New" onPress={() => setShowModal(true)} />
+        <Text style={styles.title}>Todos</Text>
+        <Button text="New" onPress={openModal} />
       </View>
       <TodoList
         data={todos}
@@ -55,7 +51,7 @@ const TodoListScreen = () => {
         isVisible={showModal}
         isEditing={Object.keys(editingTodo || {}).length > 0}
         editingTodo={editingTodo}
-        onClose={() => setShowModal(false)}
+        onClose={closeModal}
         onSubmit={onSubmit}
       />
     </View>
@@ -68,9 +64,19 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
   },
+  dropdown: {
+    width: SCREEN_WIDTH / 3,
+    alignSelf: "flex-end",
+    marginVertical: 8,
+  },
   titleContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginVertical: 16,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
   },
 });
