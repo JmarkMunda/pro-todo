@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Pressable, StyleSheet, Text, View} from "react-native";
 import {SCREEN_HEIGHT, SCREEN_WIDTH} from "../../utils/constants";
 import {Props} from "./types";
@@ -6,9 +6,20 @@ import {showMessage} from "react-native-flash-message";
 import Input from "../Input";
 import Button from "../Button";
 
-const AddEditModal = ({isVisible, onClose, onSubmit}: Props) => {
+const AddEditModal = ({
+  isVisible,
+  isEditing,
+  editingTodo,
+  onClose,
+  onSubmit,
+}: Props) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+
+  useEffect(() => {
+    setTitle(editingTodo?.title ?? "");
+    setDescription(editingTodo?.description ?? "");
+  }, [editingTodo?.title, editingTodo?.description]);
 
   const onSubmitPress = () => {
     if (!title || !description) {
@@ -20,15 +31,15 @@ const AddEditModal = ({isVisible, onClose, onSubmit}: Props) => {
     }
     const id = Math.random().toString(36).slice(2, 9);
     const data = {
-      id,
+      id: isEditing ? editingTodo!.id : id,
       title,
       description,
-      createdAt: Date.now().toString(),
+      createdAt: isEditing ? editingTodo!.createdAt : Date.now().toString(),
     };
     onSubmit(data);
     showMessage({
       type: "success",
-      message: "Added successfully",
+      message: `${isEditing ? "Changes Saved" : "Added"}`,
       icon: "success",
     });
     setTitle("");
@@ -41,8 +52,7 @@ const AddEditModal = ({isVisible, onClose, onSubmit}: Props) => {
   return (
     <Pressable onPress={onClose} style={styles.container}>
       <View style={styles.content}>
-        <Text>Create Todo</Text>
-
+        <Text>{isEditing ? "Update" : "Create"} Todo</Text>
         <View style={styles.inputs}>
           <Input
             value={title}
@@ -56,7 +66,7 @@ const AddEditModal = ({isVisible, onClose, onSubmit}: Props) => {
           />
         </View>
 
-        <Button text="Add" onPress={onSubmitPress} />
+        <Button text={isEditing ? "Edit" : "Add"} onPress={onSubmitPress} />
       </View>
     </Pressable>
   );

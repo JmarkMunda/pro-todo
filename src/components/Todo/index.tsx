@@ -8,8 +8,10 @@ const Todo = ({item, onEditTodo, onDeleteTodo}: Props) => {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Text>{item.title}</Text>
-        <Text>{item.description}</Text>
+        <View style={styles.textContainer}>
+          <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.description}>{item.description}</Text>
+        </View>
         <View style={styles.buttons}>
           <EditIcon
             name="edit"
@@ -32,13 +34,21 @@ export default Todo;
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    borderRadius: 16,
+    borderRadius: 8,
     backgroundColor: "white",
-    borderWidth: 1,
-    borderColor: "#cccccc",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+
+    elevation: 3,
   },
   content: {
     flex: 1,
+    gap: 16,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -46,5 +56,15 @@ const styles = StyleSheet.create({
   buttons: {
     flexDirection: "row",
     gap: 8,
+  },
+  textContainer: {
+    flex: 1,
+  },
+  title: {
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  description: {
+    fontSize: 12,
   },
 });
