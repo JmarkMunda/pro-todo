@@ -1,6 +1,6 @@
 import {StyleSheet, Text, View} from "react-native";
-import {SCREEN_WIDTH} from "../../utils/constants";
-import React from "react";
+import {OFFSET, SCREEN_WIDTH} from "../../utils/constants";
+import React, {useState} from "react";
 import TodoList from "../../components/TodoList";
 import AddEditModal from "../../components/AddEditModal";
 import Button from "../../components/Button";
@@ -9,14 +9,18 @@ import SearchBar from "../../components/Searchbar";
 import useSearch from "../../hooks/useSearch";
 import DropdownSelect from "../../components/DropdownSelect";
 import useDropdown from "../../hooks/useDropdown";
+import Pagination from "../../components/Pagination";
 
 const TodoListScreen = () => {
   const {searchValue, onSearchChange} = useSearch();
 
   const {dropdownItems, selectedDropdown, onDropdownChange} = useDropdown();
 
+  const [currentPage, setCurrentPage] = useState(1);
+
   const {
     todos,
+    totalTodos,
     editingTodo,
     showModal,
     openEditModal,
@@ -24,7 +28,7 @@ const TodoListScreen = () => {
     closeModal,
     onDeleteTodo,
     onSubmit,
-  } = useTodo(searchValue, selectedDropdown);
+  } = useTodo(searchValue, selectedDropdown, currentPage);
 
   return (
     <View style={styles.container}>
@@ -42,11 +46,22 @@ const TodoListScreen = () => {
         <Text style={styles.title}>Todos</Text>
         <Button text="New" onPress={openModal} />
       </View>
+
       <TodoList
         data={todos}
         onEditTodo={openEditModal}
         onDeleteTodo={onDeleteTodo}
       />
+
+      {!!totalTodos && (
+        <Pagination
+          currentPage={currentPage}
+          totalItems={totalTodos}
+          pageSize={OFFSET}
+          onPageChange={setCurrentPage}
+        />
+      )}
+
       <AddEditModal
         isVisible={showModal}
         isEditing={Object.keys(editingTodo || {}).length > 0}

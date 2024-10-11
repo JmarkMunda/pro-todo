@@ -1,8 +1,9 @@
 import {useEffect, useState} from "react";
 import {TodoType} from "../utils/types";
 import {showMessage} from "react-native-flash-message";
+import {OFFSET} from "../utils/constants";
 
-const useTodo = (searchValue: string, sortBy: string) => {
+const useTodo = (searchValue: string, sortBy: string, currentPage: number) => {
   const [todos, setTodos] = useState<TodoType[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editingTodo, setEditingTodo] = useState<TodoType | null>(null);
@@ -62,11 +63,22 @@ const useTodo = (searchValue: string, sortBy: string) => {
     });
   };
 
+  const getPaginatedTodos = (data: TodoType[]) => {
+    const start = (currentPage - 1) * OFFSET;
+    const end = start + OFFSET;
+    return data.slice(start, end);
+  };
+
   const displayedTodos = searchValue ? filteredTodos : todos;
   const sortedTodos = getSortedTodosByTitle(displayedTodos);
+  const paginatedTodos = getPaginatedTodos(sortedTodos);
+
+  // console.log("--------------------");
+  // console.log(JSON.stringify(paginatedTodos, null, 2));
 
   return {
-    todos: sortedTodos,
+    todos: paginatedTodos,
+    totalTodos: todos.length,
     showModal,
     editingTodo,
     onSubmit,
