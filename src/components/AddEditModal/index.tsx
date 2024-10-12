@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {Pressable, StyleSheet, Text, View} from "react-native";
+import {Modal, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {SCREEN_HEIGHT, SCREEN_WIDTH} from "../../utils/constants";
 import {Props} from "./types";
 import {showMessage} from "react-native-flash-message";
 import Input from "../Input";
 import Button from "../Button";
+import CloseIcon from "react-native-vector-icons/Ionicons";
 
 const AddEditModal = ({
   isVisible,
@@ -39,8 +40,11 @@ const AddEditModal = ({
     onSubmit(data);
     showMessage({
       type: "success",
-      message: `${isEditing ? "Changes Saved" : "Added"}`,
-      icon: "success",
+      message: `${
+        isEditing
+          ? "📝 Todo updated successfully!"
+          : "🎯 Success! You've just added a new todo!"
+      }`,
     });
     setTitle("");
     setDescription("");
@@ -50,25 +54,38 @@ const AddEditModal = ({
   if (!isVisible) return null;
 
   return (
-    <Pressable onPress={onClose} style={styles.container}>
-      <View style={styles.content}>
-        <Text>{isEditing ? "Update" : "Create"} Todo</Text>
-        <View style={styles.inputs}>
-          <Input
-            value={title}
-            onChangeText={setTitle}
-            placeholder="Enter title"
-          />
-          <Input
-            value={description}
-            onChangeText={setDescription}
-            placeholder="Enter description"
-          />
-        </View>
+    <Modal
+      visible={isVisible}
+      transparent
+      animationType="fade"
+      onRequestClose={onClose}>
+      <View style={styles.container}>
+        <View style={styles.content}>
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>
+              {isEditing ? "Edit" : "Create"} Todo
+            </Text>
+            <TouchableOpacity onPress={onClose}>
+              <CloseIcon name="close" size={24} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.inputs}>
+            <Input
+              value={title}
+              onChangeText={setTitle}
+              placeholder="Enter title"
+            />
+            <Input
+              value={description}
+              onChangeText={setDescription}
+              placeholder="Enter description"
+            />
+          </View>
 
-        <Button text={isEditing ? "Edit" : "Add"} onPress={onSubmitPress} />
+          <Button text={isEditing ? "Save" : "Add"} onPress={onSubmitPress} />
+        </View>
       </View>
-    </Pressable>
+    </Modal>
   );
 };
 
@@ -89,10 +106,19 @@ const styles = StyleSheet.create({
   },
   content: {
     backgroundColor: "white",
-    padding: 16,
+    padding: 24,
     borderRadius: 16,
     width: SCREEN_WIDTH / 1.5,
     gap: 8,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
   },
   inputs: {
     gap: 8,

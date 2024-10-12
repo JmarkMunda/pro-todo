@@ -33,7 +33,8 @@ export default Todo;
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 24,
     borderRadius: 8,
     backgroundColor: "white",
     shadowColor: "#000",
@@ -41,10 +42,9 @@ const styles = StyleSheet.create({
       width: 0,
       height: 1,
     },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
-
-    elevation: 3,
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
   content: {
     flex: 1,

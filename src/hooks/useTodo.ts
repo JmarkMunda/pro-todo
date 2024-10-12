@@ -41,7 +41,10 @@ const useTodo = (searchValue: string, sortBy: string, currentPage: number) => {
   const onDeleteTodo = (id: string) => {
     const newTodos = todos.filter(todo => todo.id !== id);
     setTodos(newTodos);
-    showMessage({type: "success", icon: "success", message: "Deleted"});
+    showMessage({
+      type: "success",
+      message: "❌ Todo removed from the list!",
+    });
   };
 
   const openEditModal = (id: string, newData: TodoType) => {

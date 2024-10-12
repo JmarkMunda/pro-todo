@@ -2,13 +2,14 @@ import {StyleSheet, Text, TouchableOpacity} from "react-native";
 import React from "react";
 import {Props} from "./types";
 
-const Button = ({text, onPress, style, ...props}: Props) => {
+const Button = ({text, onPress, disabled, style, ...props}: Props) => {
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[styles.button, style]}
+      style={[styles.button, style, disabled && styles.disabled]}
+      disabled={disabled}
       {...props}>
-      <Text style={styles.text}>{text}</Text>
+      <Text style={[styles.text, disabled && styles.disabledText]}>{text}</Text>
     </TouchableOpacity>
   );
 };
@@ -25,5 +26,11 @@ const styles = StyleSheet.create({
   text: {
     fontWeight: "bold",
     textAlign: "center",
+  },
+  disabled: {
+    backgroundColor: "#cccc",
+  },
+  disabledText: {
+    color: "#fffc",
   },
 });

@@ -11,7 +11,7 @@ function App(): React.JSX.Element {
       {/* TODO LIST */}
       <TodoListScreen />
 
-      <FlashMessage position="top" />
+      <FlashMessage position="top" floating />
     </SafeAreaView>
   );
 }

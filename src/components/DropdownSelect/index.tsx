@@ -7,7 +7,7 @@ const DropdownSelect = ({items, selectedItem, onChangeItem}: Props) => {
   return (
     <View style={styles.container}>
       <Picker
-        mode="dropdown"
+        mode="dialog"
         selectedValue={selectedItem}
         style={styles.picker}
         onValueChange={onChangeItem}>

@@ -44,7 +44,7 @@ const TodoListScreen = () => {
 
       <View style={styles.titleContainer}>
         <Text style={styles.title}>Todos</Text>
-        <Button text="New" onPress={openModal} />
+        <Button text="+ New" onPress={openModal} />
       </View>
 
       <TodoList
@@ -78,6 +78,7 @@ export default TodoListScreen;
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+    backgroundColor: "#f7f7f7",
   },
   dropdown: {
     width: SCREEN_WIDTH / 3,
