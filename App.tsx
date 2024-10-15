@@ -1,18 +1,18 @@
+import "react-native-gesture-handler";
 import React from "react";
-import {SafeAreaView, StatusBar} from "react-native";
+import {NavigationContainer} from "@react-navigation/native";
+import {GestureHandlerRootView} from "react-native-gesture-handler";
 import FlashMessage from "react-native-flash-message";
-import TodoListScreen from "./src/screens/TodoListScreen";
+import MainNavigator from "./src/navigators/MainNavigator";
 
 function App(): React.JSX.Element {
   return (
-    <SafeAreaView>
-      <StatusBar />
-
-      {/* TODO LIST */}
-      <TodoListScreen />
-
+    <GestureHandlerRootView>
+      <NavigationContainer>
+        <MainNavigator />
+      </NavigationContainer>
       <FlashMessage position="top" floating />
-    </SafeAreaView>
+    </GestureHandlerRootView>
   );
 }
 

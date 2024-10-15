@@ -13,11 +13,7 @@ const Todo = ({item, onEditTodo, onDeleteTodo}: Props) => {
           <Text style={styles.description}>{item.description}</Text>
         </View>
         <View style={styles.buttons}>
-          <EditIcon
-            name="edit"
-            size={20}
-            onPress={() => onEditTodo(item.id, item)}
-          />
+          <EditIcon name="edit" size={20} onPress={() => onEditTodo(item)} />
           <DeleteIcon
             name="delete"
             size={20}

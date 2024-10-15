@@ -10,14 +10,14 @@ import useSearch from "../../hooks/useSearch";
 import DropdownSelect from "../../components/DropdownSelect";
 import useDropdown from "../../hooks/useDropdown";
 import Pagination from "../../components/Pagination";
+import {Props} from "./types";
+import {capitalize} from "../../utils/helpers";
 
-const TodoListScreen = () => {
+const TodoListScreen = ({route}: Props) => {
+  const {id, name} = route.params;
   const {searchValue, onSearchChange} = useSearch();
-
   const {dropdownItems, selectedDropdown, onDropdownChange} = useDropdown();
-
   const [currentPage, setCurrentPage] = useState(1);
-
   const {
     todos,
     totalTodos,
@@ -28,7 +28,7 @@ const TodoListScreen = () => {
     closeModal,
     onDeleteTodo,
     onSubmit,
-  } = useTodo(searchValue, selectedDropdown, currentPage);
+  } = useTodo(id, name, searchValue, selectedDropdown, currentPage);
 
   return (
     <View style={styles.container}>
@@ -43,7 +43,7 @@ const TodoListScreen = () => {
       </View>
 
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>Todos</Text>
+        <Text style={styles.title}>{capitalize(name)}</Text>
         <Button text="+ New" onPress={openModal} />
       </View>
 

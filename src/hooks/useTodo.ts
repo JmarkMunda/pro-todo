@@ -1,10 +1,22 @@
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {TodoType} from "../utils/types";
 import {showMessage} from "react-native-flash-message";
 import {OFFSET} from "../utils/constants";
+import {useTodosStore} from "../stores/store";
 
-const useTodo = (searchValue: string, sortBy: string, currentPage: number) => {
-  const [todos, setTodos] = useState<TodoType[]>([]);
+const useTodo = (
+  id: string,
+  name: string,
+  searchValue: string,
+  sortBy: string,
+  currentPage: number,
+) => {
+  const {todoList, editTodoList} = useTodosStore();
+  const currentTodolist = todoList.find(item => item.id === id);
+  const todos = useMemo(
+    () => currentTodolist?.todos ?? [],
+    [currentTodolist?.todos],
+  );
   const [showModal, setShowModal] = useState(false);
   const [editingTodo, setEditingTodo] = useState<TodoType | null>(null);
   const [filteredTodos, setFilteredTodos] = useState<TodoType[]>([]);
@@ -30,24 +42,36 @@ const useTodo = (searchValue: string, sortBy: string, currentPage: number) => {
   };
 
   const onAddTodo = (data: TodoType) => {
-    setTodos(prev => [...prev, data]);
+    const todosArr = [...currentTodolist!.todos, data];
+    const newTodoList = {id, name, todos: todosArr};
+    editTodoList(id, newTodoList);
   };
 
   const onEditTodo = (data: TodoType) => {
     const updatedTodo = todos.map(todo => (todo.id === data.id ? data : todo));
-    setTodos(updatedTodo);
+    const newTodoList = {
+      id,
+      name,
+      todos: updatedTodo,
+    };
+    editTodoList(id, newTodoList);
   };
 
-  const onDeleteTodo = (id: string) => {
-    const newTodos = todos.filter(todo => todo.id !== id);
-    setTodos(newTodos);
+  const onDeleteTodo = (todoId: string) => {
+    const newTodos = todos.filter(todo => todo.id !== todoId);
+    const newTodoList = {
+      id,
+      name,
+      todos: newTodos,
+    };
+    editTodoList(id, newTodoList);
     showMessage({
       type: "success",
       message: "❌ Todo removed from the list!",
     });
   };
 
-  const openEditModal = (id: string, newData: TodoType) => {
+  const openEditModal = (newData: TodoType) => {
     openModal();
     setEditingTodo(newData);
   };
@@ -75,9 +99,6 @@ const useTodo = (searchValue: string, sortBy: string, currentPage: number) => {
   const displayedTodos = searchValue ? filteredTodos : todos;
   const sortedTodos = getSortedTodosByTitle(displayedTodos);
   const paginatedTodos = getPaginatedTodos(sortedTodos);
-
-  // console.log("--------------------");
-  // console.log(JSON.stringify(paginatedTodos, null, 2));
 
   return {
     todos: paginatedTodos,

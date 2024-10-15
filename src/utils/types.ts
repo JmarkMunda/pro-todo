@@ -4,3 +4,9 @@ export type TodoType = {
   description: string;
   createdAt: string;
 };
+
+export type TodoListType = {
+  id: string;
+  name: string;
+  todos: TodoType[];
+};
