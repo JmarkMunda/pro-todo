@@ -10,7 +10,11 @@ const MainNavigator = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Dashboard" component={DashboardScreen} />
-      <Stack.Screen name="Todo List" component={TodoListScreen} />
+      <Stack.Screen
+        name="Todo List"
+        component={TodoListScreen}
+        options={props => ({title: props.route.params.name})}
+      />
     </Stack.Navigator>
   );
 };

@@ -2,3 +2,4 @@ import {NativeStackScreenProps} from "react-native-screens/lib/typescript/native
 import {RootStackParamList} from "../../navigators/types";
 
 export type Props = NativeStackScreenProps<RootStackParamList, "Dashboard">;
+export type Navigation = Props["navigation"];

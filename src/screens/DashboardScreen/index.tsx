@@ -1,21 +1,26 @@
-import React, {useState} from "react";
-import {FlatList, StyleSheet, View} from "react-native";
-import {Props} from "./types";
+import React from "react";
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {useTodosStore} from "../../stores/store";
 import Button from "../../components/Button";
 import TodoListCard from "../../components/TodoListCard";
 import AddEditListModal from "../../components/AddEditListModal";
+import ActionSheet from "react-native-actions-sheet";
+import DeleteIcon from "react-native-vector-icons/Ionicons";
+import useDashBoard from "../../hooks/useDashboard";
 
-const DashboardScreen = ({navigation}: Props) => {
-  const {todoList, addTodoList} = useTodosStore();
-  const [showModal, setShowModal] = useState(false);
-
-  const onOpenModal = () => setShowModal(true);
-  const onCloseModal = () => setShowModal(false);
-
-  const onCardPress = (id: string, name: string) => {
-    navigation.navigate("Todo List", {id, name});
-  };
+const DashboardScreen = () => {
+  const {todoList} = useTodosStore();
+  const {
+    actionSheetRef,
+    actions,
+    showModal,
+    editingList,
+    onOpenModal,
+    onCloseModal,
+    onSheetOpen,
+    onSheetClose,
+    onNavigateTodo,
+  } = useDashBoard();
 
   return (
     <View style={styles.container}>
@@ -27,7 +32,11 @@ const DashboardScreen = ({navigation}: Props) => {
         data={todoList}
         numColumns={2}
         renderItem={({item}) => (
-          <TodoListCard item={item} onPress={onCardPress} />
+          <TodoListCard
+            item={item}
+            onPress={onNavigateTodo}
+            onActionPress={onSheetOpen}
+          />
         )}
         style={styles.todoListContainer}
       />
@@ -35,11 +44,27 @@ const DashboardScreen = ({navigation}: Props) => {
       {/* MODAL FOR ADDING NEW LIST  */}
       <AddEditListModal
         isVisible={showModal}
-        isEditing={false}
-        editingList={null}
+        isEditing={Object.keys(editingList || {}).length > 0}
+        editingList={editingList}
         onClose={onCloseModal}
-        onSubmit={addTodoList}
       />
+
+      {/* ACTION SHEET */}
+      <ActionSheet
+        ref={actionSheetRef}
+        containerStyle={styles.sheet}
+        onTouchBackdrop={onSheetClose}
+        onNavigateBack={onSheetClose}>
+        {actions.map(action => (
+          <TouchableOpacity
+            key={action.key}
+            onPress={action.onPress}
+            style={styles.sheetItem}>
+            <DeleteIcon name={action.icon} size={20} />
+            <Text>{action.name}</Text>
+          </TouchableOpacity>
+        ))}
+      </ActionSheet>
     </View>
   );
 };
@@ -52,5 +77,14 @@ const styles = StyleSheet.create({
   },
   todoListContainer: {
     marginVertical: 16,
+  },
+  sheet: {
+    padding: 24,
+  },
+  sheetItem: {
+    flexDirection: "row",
+    gap: 8,
+    alignItems: "center",
+    paddingVertical: 16,
   },
 });

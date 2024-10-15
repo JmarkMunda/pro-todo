@@ -11,7 +11,6 @@ import DropdownSelect from "../../components/DropdownSelect";
 import useDropdown from "../../hooks/useDropdown";
 import Pagination from "../../components/Pagination";
 import {Props} from "./types";
-import {capitalize} from "../../utils/helpers";
 
 const TodoListScreen = ({route}: Props) => {
   const {id, name} = route.params;
@@ -43,7 +42,7 @@ const TodoListScreen = ({route}: Props) => {
       </View>
 
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>{capitalize(name)}</Text>
+        <Text style={styles.title}>Todos: {todos.length}</Text>
         <Button text="+ New" onPress={openModal} />
       </View>
 

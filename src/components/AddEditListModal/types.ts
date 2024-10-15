@@ -5,5 +5,4 @@ export type Props = {
   isEditing: boolean;
   editingList: TodoListType | null;
   onClose: () => void;
-  onSubmit: (data: TodoListType) => void;
 };
